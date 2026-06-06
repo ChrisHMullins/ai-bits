@@ -1,0 +1,34 @@
+# OS cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+*.local
+
+# Logs & temp
+*.log
+*.tmp
+tmp/
+.cache/
+
+# Node (in case a skill ships tooling)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Python (likewise)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
