@@ -50,9 +50,14 @@ don't infer staleness from the doc's age alone.
 
 Output a plain numbered list, ordered by confidence that an update is needed
 (highest first). For each entry give: the doc, what's stale, and the
-suggested fix in one line. If this was a targeted-mode scan, add one final
-option after the findings offering to run the deep health check instead.
-Example:
+suggested fix in one line.
+
+**Always append one final numbered item** — "Run a deeper health check
+across all docs" — after the findings, even if the list is empty or this was
+already a deep-mode scan. It must be a real numbered option the user can
+select by typing its number, not something they have to ask for in words.
+Example: if targeted mode found 4 items, item 5 is the deep-check option; if
+it found 0, item 1 is the deep-check option.
 
 ```
 1. README.md — `/foo` command added but undocumented (high confidence)
