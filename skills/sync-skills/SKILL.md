@@ -20,8 +20,8 @@ runs skip straight to it:
 1. Read `~/.claude/ai-bits-repo-path` if it exists and the directory is still
    a valid git clone of the repo.
 2. Otherwise check common locations for this OS:
-   - macOS/Linux: `~/Documents/Repos/cmullins/ai-bits`, `~/repos/ai-bits`, `~/ai-bits`
-   - Windows: `%USERPROFILE%\Documents\Repos\cmullins\ai-bits`, `%USERPROFILE%\ai-bits`
+   - macOS/Linux: `~/Repos/ai-bits`, `~/repos/ai-bits`, `~/ai-bits`, `~/Documents/Repos/<username>/ai-bits`
+   - Windows: `%USERPROFILE%\Repos\ai-bits`, `%USERPROFILE%\Documents\Repos\<username>\ai-bits`, `%USERPROFILE%\ai-bits`
 3. If still not found, ask the user where to clone it (default: `~/ai-bits`
    or the OS equivalent), then:
    ```
