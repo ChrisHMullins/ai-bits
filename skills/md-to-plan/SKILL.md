@@ -40,12 +40,18 @@ section names if the doc already has a natural structure):
 Each section (including Testing) ends with a questions block. Every question
 has 2–4 concrete options as checkboxes; exactly one option per question is
 marked **(recommended)** and the recommendation should be genuinely defensible,
-not just the first idea. Format:
+not just the first idea.
+
+Questions are numbered **once, globally, across the entire document** —
+do not restart at 1 in each section's block. Track a running counter as you
+write top to bottom (Summary's questions first, then Scope's, etc.), so every
+question in the doc has a unique number the user can reference in
+conversation (e.g. "go with the recommended option for Q5"). Format:
 
 ```markdown
 > **❓ Questions**
 >
-> 1. How should takes be stored when a page is rerolled?
+> **Q5.** How should takes be stored when a page is rerolled?
 >    - [ ] Append to the existing takes array **(recommended)** — matches how storage.py already versions pages
 >    - [ ] Overwrite the latest take — simpler, but loses history
 >    - [ ] New file per take — avoids large JSON blobs, but complicates loading
@@ -58,6 +64,9 @@ Rules for questions:
 - Options must be concrete enough to act on, each with a short trade-off note.
 - The checkboxes are for the user to tick later; do NOT block on answers.
   Write the plan assuming the recommended options, and say so in the Summary.
+- Numbers must stay unique and stable within a document: if you later revise
+  the plan and add questions, append new ones with the next free number
+  rather than renumbering existing questions out from under the user.
 
 ## Rules
 
