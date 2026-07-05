@@ -2,6 +2,14 @@
 
 A personal collection of [Agent Skills](https://agentskills.io/specification) and other AI bits I write — reusable instructions that teach an AI agent (Claude Code, Copilot CLI, Codex, etc.) how to perform a specific task well.
 
+## New machine setup
+
+On a new machine, paste this to your agent:
+
+> https://github.com/ChrisHMullins/ai-bits/blob/main/SETUP.md — follow these instructions
+
+See [`SETUP.md`](SETUP.md) for what that does.
+
 ## What's a skill?
 
 A skill is a folder containing a `SKILL.md` file with YAML frontmatter and Markdown instructions. Agents discover a skill by its `description`, then load the body when the triggering conditions match.
