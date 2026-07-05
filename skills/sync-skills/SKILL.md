@@ -1,6 +1,6 @@
 ---
 name: sync-skills
-description: Use when the user wants to sync Agent Skills between this machine and the ai-bits GitHub repo (https://github.com/ChrisHMullins/ai-bits) — "sync skills", "pull down my skills", "push my skills", "update skills from the repo", or invokes /sync-skills. Works on macOS, Linux, and Windows.
+description: Use when the user wants to sync Agent Skills between this machine and the ai-bits GitHub repo (https://github.com/ChrisHMullins/ai-bits) — "sync skills", "pull down my skills", "push my skills", "update skills from the repo", or right after editing/creating a local skill that should follow the user to other machines. Also invoked as /sync-skills. Works on macOS, Linux, and Windows.
 ---
 
 # sync-skills
@@ -50,17 +50,27 @@ similar. If ambiguous, ask.
 
 ## Push (local skills dir → repo)
 
+This is also the flow to use right after making a change to a skill: edit the
+skill locally, then push it — don't hand-roll `cp`/`git` steps ad hoc.
+
 1. For every top-level folder under the local skills directory that contains
    a `SKILL.md`, copy it into `<repo>/skills/<name>`, overwriting.
 2. `git -C <repo> status --short` to see what actually changed. If nothing
    changed, say so and stop.
 3. If a skill folder is new (wasn't in the repo before), add a row to the
    `## Skills` table in `<repo>/README.md`: `| [\`name\`](skills/name/SKILL.md) | <description from frontmatter, trimmed to one clause> |`.
-4. Show the user the changed/new skill names and the diff summary, then ask
-   for confirmation before committing and pushing — this pushes to a public
-   GitHub repo, so don't push silently.
-5. On confirmation: `git -C <repo> add -A`, commit with a message like
-   `Sync skills: <names>`, then `git -C <repo> push`.
+4. `git -C <repo> diff` (not just `--short`) and read it. The repo is
+   **public** — flag anything that looks like a secret, internal path,
+   private project name, or anything else the user might not want visible
+   on GitHub, before going further.
+5. Show the user the changed/new skill names and the diff summary, then ask
+   for confirmation before committing and pushing — never push silently.
+6. On confirmation: `git -C <repo> add -A`, commit with a message describing
+   *what changed in the skill* (e.g. `md-to-plan: number questions uniquely
+   across whole document`), not a generic `Sync skills: <names>` — then
+   `git -C <repo> push`.
+7. Commit messages never include attribution lines (e.g. `Co-Authored-By:`)
+   — this matches the user's global git preference and applies here too.
 
 ## Rules
 
