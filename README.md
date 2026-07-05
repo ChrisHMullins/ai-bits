@@ -29,6 +29,8 @@ description: Use when ...      # triggering conditions only (third person)
 | Skill | Use when |
 |-------|----------|
 | [`quick`](skills/quick/SKILL.md) | The user wants a fast, scannable answer — a recap, TL;DR, or anything starting with `/quick`. |
+| [`md-to-plan`](skills/md-to-plan/SKILL.md) | Turn the current markdown file into a structured implementation plan, or invokes `/md-to-plan`. |
+| [`sync-skills`](skills/sync-skills/SKILL.md) | Sync skills between this repo and the local agent skills directory (pull down or push up), or invokes `/sync-skills`. |
 
 ## Adding a skill
 
