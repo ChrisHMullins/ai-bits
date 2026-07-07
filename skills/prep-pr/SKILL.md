@@ -1,6 +1,6 @@
 ---
 name: prep-pr
-description: Get the current branch ready for a pull request — sanity-check the diff, optionally run quality gates, draft a title/summary/test plan from the real changes, and open the PR after confirming with the user. Use when the user says "prep this PR", "get this ready for review", "open a PR for this", "let's ship this branch", or invokes /prep-pr.
+description: Get the current branch ready for a pull request — sanity-check the diff, sync with an ahead base branch and resolve conflicts, optionally run quality gates, draft a title/summary/test plan from the real changes, and open the PR after confirming with the user. Use when the user says "prep this PR", "get this ready for review", "open a PR for this", "let's ship this branch", or invokes /prep-pr.
 ---
 
 # prep-pr
@@ -23,7 +23,28 @@ feature branch first — do not open a PR from the trunk branch.
 If there are uncommitted changes, ask whether to commit them (and how) before
 continuing; don't silently fold uncommitted work into the PR draft.
 
-## Step 2 — quality gate (offer, don't force)
+## Step 2 — sync with the base branch
+
+1. `git fetch origin <base>` (the base is whatever the branch would PR
+   against — usually `main`/`master`).
+2. Check whether the base has moved: `git rev-list --count HEAD..origin/<base>`.
+   If it's `0`, the branch is already up to date — skip to Step 3.
+3. If the base is ahead, tell the user how many commits and ask whether to
+   merge or rebase (default to merge unless the user prefers rebase or the
+   repo's convention is rebase-based) before opening the PR. Don't pick
+   silently — merge vs. rebase changes history in ways the user may care
+   about.
+4. Run the chosen update (`git merge origin/<base>` or
+   `git rebase origin/<base>`). If it completes cleanly, continue.
+5. If conflicts come up, stop: list the conflicting files, do not
+   auto-resolve them, and work through each with the user (or ask them to
+   resolve and confirm) before proceeding. Never open a PR — or continue to
+   drafting one — while the branch has unresolved conflicts with the base.
+6. If a rebase or merge was started and needs to be abandoned, use
+   `git merge --abort` / `git rebase --abort`, not a hard reset — confirm
+   with the user first regardless.
+
+## Step 3 — quality gate (offer, don't force)
 
 Ask the user if they want a quality pass before opening the PR:
 - `/code-review` for correctness/simplification findings on the diff
@@ -34,7 +55,7 @@ Do not run these unprompted — surface them as an option, since the user may
 have already done this or want to skip it for a draft PR. If they decline or
 don't respond to the offer, move on.
 
-## Step 3 — draft the PR
+## Step 4 — draft the PR
 
 Using the full commit range from Step 1 (not just the last commit):
 
@@ -49,7 +70,7 @@ Using the full commit range from Step 1 (not just the last commit):
 Show this draft to the user before doing anything else. Do not push or open
 the PR yet.
 
-## Step 4 — confirm, push, open
+## Step 5 — confirm, push, open
 
 Once the user approves the draft (or edits it):
 
@@ -70,3 +91,5 @@ without the user having seen and approved the draft body first.
   nothing to open a PR for.
 - If a PR already exists for this branch (`gh pr view` succeeds), tell the
   user and ask whether they want to update it instead of opening a new one.
+- Never open a PR from a branch that's behind its base with unresolved
+  conflicts — Step 2 must finish clean before drafting or opening anything.
