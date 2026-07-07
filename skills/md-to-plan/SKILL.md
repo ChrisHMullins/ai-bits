@@ -68,6 +68,32 @@ Rules for questions:
   the plan and add questions, append new ones with the next free number
   rather than renumbering existing questions out from under the user.
 
+## Resolving questions after the fact
+
+Once a plan document produced by this skill exists, the user may come back in
+chat and answer one or more of its numbered questions directly (e.g. "go with
+the recommended option for Q2", "for Q5 use the file-per-take option", "Q3:
+option 2"). Treat this as an edit to the plan file, not a new planning pass:
+
+1. For each question the user answered, fold that decision into the prose of
+   the section it belongs to (Scope bullet, Implementation step, Testing
+   case, etc.) as a stated requirement — not just a ticked checkbox. Write it
+   the way you'd have written it if you'd known the answer from the start.
+2. Delete that question's entire block (the `**Qn.**` line and its options)
+   from the Questions list it lived in.
+3. Leave every other question's number exactly as it was. Numbers are
+   per-document-unique and never renumber — if Q2 is answered and removed,
+   Q3 stays Q3 (it does not become Q2). It's expected for the remaining
+   numbers to be non-contiguous.
+4. If a question was answered with something other than the recommended
+   option, make sure the chosen option's trade-off (not the recommended
+   one's) is what shows up in the plan prose.
+5. If answering a question invalidates or opens up a new open question
+   elsewhere in the doc, append it as a new question using the next free
+   global number — do not insert it into the middle of the numbering.
+6. After editing, confirm to the user which questions were resolved and
+   folded in, and how many remain open.
+
 ## Rules
 
 - Edit the file in place. No new files, no sidecar docs.
