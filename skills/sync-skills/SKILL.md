@@ -40,9 +40,14 @@ similar. If ambiguous, ask.
    tree — stop and show the user, don't force anything).
 2. For every top-level folder under `<repo>/skills/` that contains a
    `SKILL.md`, copy it into the local skills directory, overwriting the
-   existing folder if present:
-   - macOS/Linux: `cp -r <repo>/skills/<name> <skills-dir>/<name>`
-   - Windows (PowerShell): `Copy-Item -Recurse -Force <repo>\skills\<name> <skills-dir>\<name>`
+   existing folder if present. `cp -r src dest` nests (`dest/src`) when
+   `dest` already exists as a directory — remove the destination first, or
+   copy contents rather than the folder itself:
+   - macOS/Linux: `rm -rf <skills-dir>/<name> && cp -r <repo>/skills/<name> <skills-dir>/<name>`
+   - Windows (PowerShell): `Remove-Item -Recurse -Force <skills-dir>\<name> -ErrorAction SilentlyContinue; Copy-Item -Recurse -Force <repo>\skills\<name> <skills-dir>\<name>`
+   - After copying, verify: the target `SKILL.md` must sit directly at
+     `<skills-dir>/<name>/SKILL.md`, not one level deeper
+     (`<skills-dir>/<name>/<name>/SKILL.md`).
 3. Report which skills were added or updated (diff folder names before/after,
    don't just say "done").
 4. Never delete a local skill that isn't in the repo — that may be a
@@ -54,7 +59,11 @@ This is also the flow to use right after making a change to a skill: edit the
 skill locally, then push it — don't hand-roll `cp`/`git` steps ad hoc.
 
 1. For every top-level folder under the local skills directory that contains
-   a `SKILL.md`, copy it into `<repo>/skills/<name>`, overwriting.
+   a `SKILL.md`, copy it into `<repo>/skills/<name>`, overwriting. Same
+   nesting hazard as the pull direction applies in reverse — remove
+   `<repo>/skills/<name>` first, or copy contents rather than the folder
+   itself, and verify `<repo>/skills/<name>/SKILL.md` isn't nested one level
+   deeper afterward.
 2. `git -C <repo> status --short` to see what actually changed. If nothing
    changed, say so and stop.
 3. If a skill folder is new (wasn't in the repo before), add a row to the
