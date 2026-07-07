@@ -48,9 +48,12 @@ don't infer staleness from the doc's age alone.
 
 ## Step 4 — present the ranked list
 
-Output a plain numbered list, ordered by confidence that an update is needed
-(highest first). For each entry give: the doc, what's stale, and the
-suggested fix in one line.
+The numbered list is one item **per doc** — the number is what the user
+types to select it. Never collapse a doc's changes into one long sentence:
+if a doc has more than one stale point, break them into a bulleted sub-list
+under that doc's number, one bullet per atomic change, each with its own
+short fix. A doc with a single stale point still gets one bullet — the
+number line itself only ever holds the doc name and confidence.
 
 **Always append one final numbered item** — "Run a deeper health check
 across all docs" — after the findings, even if the list is empty or this was
@@ -60,14 +63,19 @@ Example: if targeted mode found 4 items, item 5 is the deep-check option; if
 it found 0, item 1 is the deep-check option.
 
 ```
-1. README.md — `/foo` command added but undocumented (high confidence)
-   → add a `/foo` row to the command table with its one-line description
-2. docs/architecture.md — still describes the old sync queue, removed in this change (high confidence)
-   → replace the queue section with the new direct-write path
-3. plan-oauth-refresh.md — implementation added a retry-with-backoff step not in the plan (medium confidence)
-   → add a step documenting the retry behavior and why it was needed
-4. docs/setup.md — mentions a config flag that may be unrelated to this change (low confidence)
-   → verify the flag still exists before touching this
+1. README.md (high confidence)
+   - `/foo` command added but undocumented → add a `/foo` row to the command table with its one-line description
+   - old `--legacy` flag still documented but was removed → delete that section
+
+2. docs/architecture.md (high confidence)
+   - still describes the old sync queue, removed in this change → replace the queue section with the new direct-write path
+
+3. plan-oauth-refresh.md (medium confidence)
+   - implementation added a retry-with-backoff step not in the plan → add a step documenting the retry behavior and why it was needed
+
+4. docs/setup.md (low confidence)
+   - mentions a config flag that may be unrelated to this change → verify the flag still exists before touching this
+
 5. Run a deeper health check across all docs, not just what changed here
 ```
 
