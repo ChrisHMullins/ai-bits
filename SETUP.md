@@ -15,14 +15,20 @@ your own copy/git steps.
    clone path that matches the user's repo-folder convention (confirm with
    them before cloning), and recording the resolved path in
    `~/.claude/ai-bits-repo-path`.
-3. Copy `<repo>/skills/sync-skills` into the skills directory from step 1.
+3. Check the machine's git identity: `git config user.email` (run inside
+   the clone) must return a real address the user recognizes. If it's
+   blank, git will auto-guess something like `user@hostname.local` on the
+   first commit and leak it into the public repo's history — offer to set
+   `git config --global user.name` / `user.email` now, while setting up
+   the machine, rather than discovering it mid-push later.
+4. Copy `<repo>/skills/sync-skills` into the skills directory from step 1.
    Verify the result sits at `<skills-dir>/sync-skills/SKILL.md`, not nested
    one level deeper (`cp -r` nests when the destination folder already
    exists).
-4. Install the remaining skills by following the **Pull** flow in the
+5. Install the remaining skills by following the **Pull** flow in the
    now-installed `sync-skills` skill — it handles diffing against any
    existing local skills, per-skill confirmation, and reporting.
-5. Confirm to the user which skills were installed or updated, and that
+6. Confirm to the user which skills were installed or updated, and that
    `sync-skills` is the tool for all future syncing — pulling updates or
    pushing local skill edits back up, never hand-rolled `cp`/`git` commands.
 

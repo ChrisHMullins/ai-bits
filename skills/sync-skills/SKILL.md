@@ -101,7 +101,13 @@ skill locally, then push it — don't hand-roll `cp`/`git` steps ad hoc.
    further.
 7. Show the user the changed/new skill names and the diff summary, then ask
    for confirmation before committing and pushing — never push silently.
-8. On confirmation: `git -C <repo> add -A`, commit with a message describing
+8. On confirmation, first verify the committer identity: `git -C <repo>
+   config user.email` must return a real address the user recognizes. If
+   it's blank or an auto-guessed `user@hostname.local`, stop and have the
+   user set `git config --global user.name` / `user.email` before
+   committing — otherwise the guessed identity leaks into the public repo's
+   history and the commits won't link to their GitHub profile. Then:
+   `git -C <repo> add -A`, commit with a message describing
    *what changed in the skill* (e.g. `md-to-plan: number questions uniquely
    across whole document`), not a generic `Sync skills: <names>` — then
    `git -C <repo> push`.
