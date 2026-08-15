@@ -2,6 +2,8 @@
 
 A personal collection of [Agent Skills](https://agentskills.io/specification) and other AI bits I write — reusable instructions that teach an AI agent (Claude Code, Copilot CLI, Codex, etc.) how to perform a specific task well.
 
+One of the skills helps me keep skills synced between various machines I use. I just give the agent the instructions below. Most folks probably won't need to do that, and maybe by the time you are reading this there are better first party mechanisms. 
+
 ## New machine setup
 
 On a new machine, paste this to your agent:
