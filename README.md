@@ -52,6 +52,10 @@ description: Use when ...      # triggering conditions only (third person)
 4. Test it: have an agent try to apply it to a realistic scenario before relying on it.
 5. Add a row to the table above.
 
+Skills that name LAN addresses, hostnames, local paths, or private projects
+go in a separate private repo (`ai-bits-private`, same layout) instead;
+`sync-skills` handles both and asks which one a new skill belongs in.
+
 ## Using these skills
 
 Drop a skill folder into your agent's skills directory (e.g. `~/.claude/skills/` for Claude Code), or point your plugin/marketplace config at this repo.

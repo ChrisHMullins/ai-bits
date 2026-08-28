@@ -6,31 +6,44 @@ description: Use when the user wants to sync Agent Skills between this machine a
 # sync-skills
 
 Keep the local agent skills directory (e.g. `~/.claude/skills/`) in sync with
-the `ai-bits` GitHub repo, so skills follow the user across machines.
+the `ai-bits` GitHub repos, so skills follow the user across machines.
 
-Repo: `https://github.com/ChrisHMullins/ai-bits` — skills live under `skills/<name>/SKILL.md`
-in that repo, same layout as the local skills directory.
+Two repos, same layout (`skills/<name>/SKILL.md`, matching the local skills dir):
 
-## Step 1 — locate the local clone
+| | Repo | Path file |
+| --- | --- | --- |
+| **public** | `https://github.com/ChrisHMullins/ai-bits` | `~/.claude/ai-bits-repo-path` |
+| **private** | `https://github.com/ChrisHMullins/ai-bits-private` | `~/.claude/ai-bits-private-repo-path` |
 
-Resolve the repo path in this order, and remember whichever one works by
-writing it to `~/.claude/ai-bits-repo-path` (plain text, one line) so future
-runs skip straight to it:
+Private is for skills that name LAN addresses, hostnames, local paths, or
+private projects. **A skill lives in exactly one repo, never both.** Every
+step below runs for both repos unless it says otherwise.
 
-1. Read `~/.claude/ai-bits-repo-path` if it exists and the directory is still
-   a valid git clone of the repo.
+## Step 1 — locate the local clones
+
+Do this for each repo (`<repo>` = `ai-bits`, then `ai-bits-private`).
+Resolve its path in this order, and remember whichever one works by writing
+it to that repo's path file (plain text, one line) so future runs skip
+straight to it:
+
+1. Read the path file if it exists and the directory is still a valid git
+   clone of that repo.
 2. Otherwise check common locations for this OS (`<username>` = the GitHub
    account name, e.g. `ChrisHMullins`):
-   - macOS/Linux: `~/Repos/<username>/ai-bits`, `~/Repos/ai-bits`, `~/repos/ai-bits`, `~/ai-bits`, `~/Documents/Repos/<username>/ai-bits`
-   - Windows: `%USERPROFILE%\Repos\<username>\ai-bits`, `%USERPROFILE%\Repos\ai-bits`, `%USERPROFILE%\Documents\Repos\<username>\ai-bits`, `%USERPROFILE%\ai-bits`
-3. If still not found, propose a clone path matching the user's evident
-   repo-folder convention (e.g. `~/Repos/<username>/ai-bits` if their other
-   repos live there), falling back to `~/ai-bits` or the OS equivalent only
-   if there's no convention to follow. Confirm the path with the user, then:
+   - macOS/Linux: `~/Repos/<username>/<repo>`, `~/Repos/<repo>`, `~/repos/<repo>`, `~/<repo>`, `~/Documents/Repos/<username>/<repo>`
+   - Windows: `%USERPROFILE%\Repos\<username>\<repo>`, `%USERPROFILE%\Repos\<repo>`, `%USERPROFILE%\Documents\Repos\<username>\<repo>`, `%USERPROFILE%\<repo>`
+3. If still not found, propose a clone path next to the other repo if that
+   one was found, else matching the user's evident repo-folder convention
+   (e.g. `~/Repos/<username>/<repo>`), falling back to `~/<repo>` or the OS
+   equivalent only if there's no convention to follow. Confirm the path with
+   the user, then:
    ```
-   git clone https://github.com/ChrisHMullins/ai-bits.git <path>
+   git clone https://github.com/ChrisHMullins/<repo>.git <path>
    ```
-4. Write the resolved path to `~/.claude/ai-bits-repo-path`.
+   The private repo needs GitHub auth (`gh auth login` or a credential
+   helper). If the clone is refused, say so and continue with public only —
+   private skills just won't sync on this machine until that's fixed.
+4. Write the resolved path to the path file.
 
 ## Step 2 — determine direction
 
@@ -46,11 +59,12 @@ similar. If ambiguous, ask.
    each differing skill, show the user the diff and offer to push it first
    (via the Push flow) before pulling over it — never overwrite a differing
    local skill without an explicit per-skill go-ahead.
-2. `git -C <repo> pull --ff-only` (if this fails — diverged history, dirty
-   tree — stop and show the user, don't force anything).
-3. For every top-level folder under `<repo>/skills/` that contains a
-   `SKILL.md`, copy it into the local skills directory, overwriting the
-   existing folder if present. `cp -r src dest` nests (`dest/src`) when
+2. `git -C <repo> pull --ff-only` in both repos (if this fails — diverged
+   history, dirty tree — stop and show the user, don't force anything).
+3. For every top-level folder under `<repo>/skills/` in **either** repo that
+   contains a `SKILL.md`, copy it into the local skills directory, overwriting
+   the existing folder if present. If the same name is in both repos that's
+   a mistake — tell the user, use the private copy, and don't try to fix it. `cp -r src dest` nests (`dest/src`) when
    `dest` already exists as a directory — remove the destination first, or
    copy contents rather than the folder itself:
    - macOS/Linux: `rm -rf <skills-dir>/<name> && cp -r <repo>/skills/<name> <skills-dir>/<name>`
@@ -60,7 +74,7 @@ similar. If ambiguous, ask.
      (`<skills-dir>/<name>/<name>/SKILL.md`).
 4. Report which skills were added or updated (diff folder names before/after,
    don't just say "done").
-5. **Prune check** — for each local skill that isn't in the repo and isn't
+5. **Prune check** — for each local skill that isn't in either repo and isn't
    listed in `<skills-dir>/.sync-local` (see Push step 1), ask the user per
    skill: **delete** (it was removed/renamed in the repo), **keep** (it's a
    work-in-progress), or **push** (it should be in the repo). Delete only on
@@ -78,27 +92,34 @@ skill locally, then push it — don't hand-roll `cp`/`git` steps ad hoc.
    the repo. This file itself is machine-local too — never copy it into the
    repo or commit it.
 2. For every top-level local skill folder that contains a `SKILL.md` **and
-   already has a same-named folder in `<repo>/skills/`**, copy it into
-   `<repo>/skills/<name>`, overwriting. Same nesting hazard as the pull
+   already has a same-named folder in either repo's `skills/`**, copy it
+   into that same repo's `skills/<name>`, overwriting — a skill lives in
+   exactly one repo, and pushing never moves it. Same nesting hazard as the pull
    direction applies in reverse — remove `<repo>/skills/<name>` first, or
    copy contents rather than the folder itself, and verify
    `<repo>/skills/<name>/SKILL.md` isn't nested one level deeper afterward.
-3. Local skills with **no** same-named folder in the repo are **never
+3. Local skills with **no** same-named folder in either repo are **never
    auto-published**. Skip any listed in `.sync-local` silently. For the
-   rest, list each with its frontmatter description and ask the user per
-   skill: **publish**, **keep local this time**, or **always keep local**
-   (append the folder name to `.sync-local`). Copy in only the ones
-   explicitly approved. First publication to a public repo is where the
-   embarrassment risk lives — when in doubt, don't publish.
-4. `git -C <repo> status --short` to see what actually changed. If nothing
-   changed, say so and stop.
+   rest, read the `SKILL.md` and list each with its frontmatter description
+   and a recommendation — **private** if it names a LAN address, hostname,
+   local path, username, or private project; **public** otherwise — then
+   ask the user per skill: **publish public**, **publish private**, **keep
+   local this time**, or **always keep local** (append the folder name to
+   `.sync-local`). Copy in only the ones explicitly approved, to the repo
+   chosen. First publication to the public repo is where the embarrassment
+   risk lives — when in doubt, recommend private.
+4. `git -C <repo> status --short` in both repos to see what actually
+   changed. If nothing changed in either, say so and stop. Steps 5–8 run
+   per repo that has changes.
 5. If a skill folder is new (wasn't in the repo before), add a row to the
    `## Skills` table in `<repo>/README.md`: `| [\`name\`](skills/name/SKILL.md) | <description from frontmatter, trimmed to one clause> |`.
-6. `git -C <repo> diff` (not just `--short`) and read it. Remind the user
-   the repo is **public** before showing anything, then flag whatever looks
-   like a secret, internal path, private project or employer name, or
-   anything else they might not want visible on GitHub, before going
-   further.
+6. `git -C <repo> diff` (not just `--short`) and read it. For the public
+   repo, remind the user it is **public** before showing anything, then flag
+   whatever looks like a secret, internal path, private project or employer
+   name, or anything else they might not want visible on GitHub, before
+   going further — if it belongs in the private repo, offer to move it
+   there instead. The private repo skips that check, but an actual secret
+   (a token value, a password) never goes in either repo.
 7. Show the user the changed/new skill names and the diff summary, then ask
    for confirmation before committing and pushing — never push silently.
 8. On confirmation, first verify the committer identity: `git -C <repo>
@@ -119,11 +140,15 @@ skill locally, then push it — don't hand-roll `cp`/`git` steps ad hoc.
 - Never force-push, rebase, or rewrite history in the repo.
 - Never delete a skill implicitly. The only path to deletion is the pull
   flow's prune check, with an explicit per-skill yes from the user.
-- Never publish a local skill the repo hasn't seen before without asking —
-  the repo is public; see Push step 3.
+- Never publish a local skill neither repo has seen before without asking —
+  see Push step 3. Never move a skill from private to public on your own;
+  only on an explicit ask.
 - `<skills-dir>/.sync-local` is machine-local: never commit it, copy it into
   the repo, or sync it between machines.
 - Plain directory copies only, never symlinks (Windows symlinks need
   elevated permissions/dev mode; copies work identically on every OS).
-- If `<repo>` has uncommitted changes unrelated to skills when pulling, stop
+- If a repo has uncommitted changes unrelated to skills when pulling, stop
   and show the user rather than stashing or discarding anything.
+- Never move a skill from private to public on your own — only when the user
+  explicitly asks. Public → private is fine when the privacy check catches
+  something.
