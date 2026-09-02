@@ -62,8 +62,11 @@ Rules for questions:
   If a section has no real open question, ask the single most load-bearing
   assumption you made ("I assumed X — correct?") with alternatives.
 - Options must be concrete enough to act on, each with a short trade-off note.
-- The checkboxes are for the user to tick later; do NOT block on answers.
-  Write the plan assuming the recommended options, and say so in the Summary.
+- The checkboxes are a display convention — they make options and trade-offs
+  scannable. Don't expect the user to tick them; answers usually arrive in
+  chat instead (see "Resolving questions after the fact"). Never block on
+  answers: write the plan assuming the recommended options, and say so in
+  the Summary.
 - Numbers must stay unique and stable within a document: if you later revise
   the plan and add questions, append new ones with the next free number
   rather than renumbering existing questions out from under the user.
@@ -73,7 +76,21 @@ Rules for questions:
 Once a plan document produced by this skill exists, the user may come back in
 chat and answer one or more of its numbered questions directly (e.g. "go with
 the recommended option for Q2", "for Q5 use the file-per-take option", "Q3:
-option 2"). Treat this as an edit to the plan file, not a new planning pass:
+option 2"). Treat this as an edit to the plan file, not a new planning pass.
+
+Chat is the primary way questions get resolved. Two gestures to recognize:
+
+- **Bulk accept** — "go with the recommendations", "use the defaults",
+  "resolve everything as recommended": fold every open question's recommended
+  option in and remove all question blocks in one pass — don't walk through
+  them one at a time or ask for per-question confirmation. Mixed forms
+  ("recommendations for everything, but Q4 gets option 2") are the same
+  single pass with the named exceptions swapped in.
+- **Ticked boxes** — if the doc comes back with checkboxes ticked, a ticked
+  option counts as an answer to that question; resolve it the same way as a
+  chat answer.
+
+However the answers arrived:
 
 1. For each question the user answered, fold that decision into the prose of
    the section it belongs to (Scope bullet, Implementation step, Testing
@@ -100,6 +117,7 @@ option 2"). Treat this as an edit to the plan file, not a new planning pass:
 - Ground every implementation step in the actual codebase — read the relevant
   code first so file paths, function names, and test commands are real.
 - Do not start implementing anything. The deliverable is the plan document.
-- After writing, tell the user: the plan assumes the recommended options, and
-  they should tick/adjust the checkboxes, then hand the doc back for
-  implementation.
+- After writing, tell the user: the plan assumes the recommended options;
+  they can answer questions in chat by number, talk them through, or just say
+  "go with the recommendations" — then hand the doc back for implementation.
+  (Ticking checkboxes works too, but isn't expected.)
