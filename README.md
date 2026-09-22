@@ -43,6 +43,7 @@ description: Use when ...      # triggering conditions only (third person)
 | [`sync-skills`](skills/sync-skills/SKILL.md) | Sync skills between this repo and the local agent skills directory (pull down or push up), or invokes `/sync-skills`. |
 | [`clickable-prototypes`](skills/clickable-prototypes/SKILL.md) | Build a throwaway, clickable prototype of a plan or feature idea for a design/UX check, or invokes `/clickable-prototypes`. |
 | [`update-docs`](skills/update-docs/SKILL.md) | Find stale docs and present a ranked list of updates to pick from, or invokes `/update-docs`. |
+| [`prep-pr`](skills/prep-pr/SKILL.md) | Get the current branch ready for a pull request — check the diff, sync with the base branch, draft the title and test plan, or invokes `/prep-pr`. |
 | [`needs-user`](skills/needs-user/SKILL.md) | Produce the closed list of decisions and actions that need the user, and nothing else — no status report, no narrative of work done, or invokes `/needs-user`. |
 
 ## Adding a skill
