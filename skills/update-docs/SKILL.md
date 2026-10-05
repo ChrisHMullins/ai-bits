@@ -1,12 +1,31 @@
 ---
 name: update-docs
-description: Scan the project's docs, figure out which ones are stale, and present a ranked, numbered list of suggested updates the user can pick from by entering a number. Use after implementing a plan (including ad hoc changes made along the way), after adding/changing a feature or command, or whenever the user wants a docs health check — "update the docs", "do the docs need changes", "check if the readme is stale", "docs health check", or invokes /update-docs.
+description: Scan the project's docs, figure out which ones are stale, and present a ranked, numbered list of suggested updates the user can pick from by entering a number. Read-only until the user picks — never edits a doc before the user selects an option. Use after implementing a plan (including ad hoc changes made along the way), after adding/changing a feature or command, or whenever the user wants a docs health check — "update the docs", "do the docs need changes", "check if the readme is stale", "docs health check", or invokes /update-docs.
 ---
 
 # update-docs
 
-Find out-of-date documentation and let the user choose what to fix, without
+Find out-of-date documentation and **let the user choose what to fix**, without
 just rewriting everything unprompted.
+
+## Hard rule — report first, edit only after a selection
+
+This skill is a review step. Its whole value is that the user sees the
+findings and decides what changes; an edit made before that defeats the
+purpose, even if the edit is correct.
+
+- Before doing anything else, print exactly:
+  "I will look for docs that might need updates and report back without making any edits."
+- Do not edit, create, or delete any file until the user has replied to the
+  numbered list (Step 4) with a selection.
+- Being invoked is **not** a selection — even if the request was literally
+  "update the docs". Only a reply to the numbered list counts.
+- This holds in auto mode and every other permission mode. Auto mode means
+  tool calls don't need approval; it does not mean the user has picked
+  which docs to change.
+- If you realize you have already edited a file before getting a selection:
+  stop, tell the user exactly which files you changed, and ask whether to
+  keep or revert them. Do not continue the scan or try to quietly undo it.
 
 ## Step 1 — pick a mode
 
@@ -79,16 +98,23 @@ it found 0, item 1 is the deep-check option.
 5. Run a deeper health check across all docs, not just what changed here
 ```
 
-Then stop and wait — do not apply anything yet. Tell the user they can reply
-with a number (or a comma-separated list, or "all") to apply those updates,
-or give different instructions instead. Picking the last option re-runs from
-Step 1 in deep mode instead of applying an edit.
+Directly under the list, print exactly:
+"No files have been changed. Reply with a number (or a comma-separated list, or "all") to apply those updates, or give different instructions."
+
+Then **end your turn**. Do not apply anything yet. Picking the last option
+re-runs from Step 1 in deep mode instead of applying an edit.
 
 ## Step 5 — apply on selection
 
+**Gate:** before touching any file, confirm the user's most recent message
+is a reply to the numbered list that selects one or more items (a number, a
+list, "all", or instructions that clearly pick specific items). If it isn't,
+do not edit — go back to waiting.
+
 If the user picks the deep-check option, go back to Step 1 in deep mode and
 present a fresh ranked list from that scan — don't apply anything from the
-targeted list first unless they also selected other numbers.
+targeted list first unless they also selected other numbers. The hard rule
+applies again to the new list.
 
 When the user picks finding(s) by number:
 - Make the edit(s) to that doc, matching the suggested fix (adjust if the
