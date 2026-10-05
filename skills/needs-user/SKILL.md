@@ -142,6 +142,14 @@ reappears the next time something needs it. If something will bring it back,
 it is state, and reporting it costs the owner nothing. If nothing will, it is
 an action wearing state's clothing, and it belongs on the list.
 
+**The test is relative to the scope of the list, and inverts inside it.** An
+item held by a standing surface — a ticket queue, an inbox, a backlog — is
+state at the wide scope, because that surface is the mechanism. But when the
+list is narrowed to *that surface's own contents*, the same items stop being
+"something else will raise this" and become the subject. A narrowed list that
+omits them on re-surfacing grounds is empty for the wrong reason. Ask the test
+against the list being written, not against the machine in general.
+
 **The tell is obligation-flavoured phrasing outside the list**: *"waiting on
 your next push"*, *"say the word and I'll…"*, *"when you get a chance"*,
 *"let me know if you want…"*. Each one quietly opens a ticket in someone's
